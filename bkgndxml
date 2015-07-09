@@ -9,9 +9,11 @@ FilTyp="gif|jpg|png|bmp"
 # SortFil=Alphabetic
 SortFil=Random
 Dpth=30
+Autoset=on
+XmlFilPath=$HOME/.config
 
 ImgFils=$(
-  find -L $PWD -maxdepth $Dpth -regextype posix-extended \
+  find $PWD -maxdepth $Dpth -regextype posix-extended \
                       -iregex ".*\.($FilTyp)" 2> /dev/null )
 
 if  [ "$SortFil" == "Random" ] ; then
@@ -57,7 +59,23 @@ if [ $filtol -gt 1 ] ; then
     fi
 
     echo "</background>"
-  ) > $OutFil
+  ) > $"OutFil"
+
+  if [ "$Autoset" == "on" ] ; then
+    if [ -z "$XmlFilPath" ] ; then
+      XmlFilPath="$PWD"
+    else
+      mkdir -p "$XmlFilPath"
+      mv -f "$OutFil" "$XmlFilPath/$OutFil"
+    fi
+    x=$(gnome-session --version)
+    x=${x#* }
+    if [ "${x%%.*}" == "3" ] ; then
+      gsettings set org.gnome.desktop.background picture-uri "file://$XmlFilPath/$OutFil"
+    elif [ "${x%%.*}" == "2" ] ; then
+      gconftool
+    fi
+  fi
 
 else
   /usr/bin/zenity --warning --title='Error!' \
