@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#libglib2.0-bin
-#gsettings set org.gnome.desktop.background picture-uri file:///
 OutFil=background.xml
 Statc=595.0
 Trns=5.0
@@ -9,11 +7,10 @@ FilTyp="gif|jpg|png|bmp"
 # SortFil=Alphabetic
 SortFil=Random
 Dpth=30
-Autoset=on
-XmlFilPath=$HOME/.config
+Autoset=on ; XmlFilPath=$HOME/.config
 
 ImgFils=$(
-  find $PWD -maxdepth $Dpth -regextype posix-extended \
+  find -L $PWD -maxdepth $Dpth -regextype posix-extended \
                       -iregex ".*\.($FilTyp)" 2> /dev/null )
 
 if  [ "$SortFil" == "Random" ] ; then
@@ -59,7 +56,7 @@ if [ $filtol -gt 1 ] ; then
     fi
 
     echo "</background>"
-  ) > $"OutFil"
+  ) > "$OutFil"
 
   if [ "$Autoset" == "on" ] ; then
     if [ -z "$XmlFilPath" ] ; then
@@ -73,7 +70,7 @@ if [ $filtol -gt 1 ] ; then
     if [ "${x%%.*}" == "3" ] ; then
       gsettings set org.gnome.desktop.background picture-uri "file://$XmlFilPath/$OutFil"
     elif [ "${x%%.*}" == "2" ] ; then
-      gconftool
+      gconftool --set --type=string /desktop/gnome/background/picture_filename "$XmlFilPath/$OutFil"
     fi
   fi
 
