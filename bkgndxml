@@ -4,44 +4,57 @@ outfil=background.xml
 statc=1795.0
 trans=5.0
 filtyp="*.gif *.GIF *.jpg *.JPG *.png *.PNG *.bmp *.BMP"
+rndm=1
+dpth=30
 
-ls $filtyp 1> tmpfl6395671 2> /dev/null
-filtol=$(wc -l tmpfl6395671 | cut -d " " -f1)
-sed 's/ /jTqd-_u/g' tmpfl6395671 > tmpfl639567
-rm -f tmpfl6395671
-
+rm -f tmpfl6395851
+for typs in $filtyp
+do
+  find $PWD -name "$typs" -maxdepth $dpth 1>> tmpfl6395851 2> /dev/null
+done
+filtol=$(wc -l tmpfl6395851 | cut -d " " -f1)
+if  [ $rndm -eq 1 ] ; then
+  sed 's/ /jTqd-_u/g' tmpfl6395851 | sort -R > tmpfl639585
+else
+  sed 's/ /jTqd-_u/g' tmpfl6395851 | sort > tmpfl639585
+fi
+rm -f tmpfl6395851
 
 if [ $filtol -gt 1 ] ; then
-  for img in $(cat tmpfl639567)
+  for img in $(cat tmpfl639585)
   do
 
     if [ -z $previous ] ; then
       first=$img
+      yer=$(date +%Y)
+      mnth=$(date +%m)
+      day=$(date +%d)
       echo "<background>" > $outfil
       echo "  <starttime>" >> $outfil
-      echo "    <year>2009</year>" >> $outfil
-      echo "    <month>08</month>" >> $outfil
-      echo "    <day>04</day>" >> $outfil
+      echo "    <year>$yer</year>" >> $outfil
+      echo "    <month>$mnth</month>" >> $outfil
+      echo "    <day>$day</day>" >> $outfil
       echo "    <hour>00</hour>" >> $outfil
       echo "    <minute>00</minute>" >> $outfil
       echo "    <second>00</second>" >> $outfil
       echo "  </starttime>" >> $outfil
-      echo "<!-- This animation will start at 2009/08/04 00:00. -->" >> $outfil
+      echo "<!-- This animation will start at $yer/$mnth/$day 00:00. -->" >> $outfil
       echo "  <static>" >> $outfil
-      echo "    <duration>"$statc"</duration>" >> $outfil
-      echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+      echo "    <duration>$statc</duration>" >> $outfil
+      echo "    <file>$img</file>" >> $outfil
       echo "  </static>" >> $outfil
-    fi
 
-    if [ $previous ] ; then
-      echo "  <transition>" >> $outfil
-      echo "    <duration>"$trans"</duration>" >> $outfil
-      echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
-      echo "    <to>"$PWD"/"$img"</to>" >> $outfil
-      echo "  </transition>" >> $outfil
+    else
+      if [ "$trans" != "0" ] ; then
+        echo "  <transition>" >> $outfil
+        echo "    <duration>$trans</duration>" >> $outfil
+        echo "    <from>$previous</from>" >> $outfil
+        echo "    <to>$img</to>" >> $outfil
+        echo "  </transition>" >> $outfil
+      fi
       echo "  <static>" >> $outfil
-      echo "    <duration>"$statc"</duration>" >> $outfil
-      echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+      echo "    <duration>$statc</duration>" >> $outfil
+      echo "    <file>$img</file>" >> $outfil
       echo "  </static>" >> $outfil
     fi
 
@@ -49,11 +62,13 @@ if [ $filtol -gt 1 ] ; then
 
   done
 
-  echo "  <transition>" >> $outfil
-  echo "    <duration>"$trans"</duration>" >> $outfil
-  echo "    <from>"$PWD"/"$img"</from>" >> $outfil
-  echo "    <to>"$PWD"/"$first"</to>" >> $outfil
-  echo "  </transition>" >> $outfil
+  if [ "$trans" != "0" ] ; then
+    echo "  <transition>" >> $outfil
+    echo "    <duration>$trans</duration>" >> $outfil
+    echo "    <from>"$PWD"/$img</from>" >> $outfil
+    echo "    <to>"$PWD"/$first</to>" >> $outfil
+    echo "  </transition>" >> $outfil
+  fi
   echo "</background>" >> $outfil
 
   mv $outfil a$outfil
@@ -62,5 +77,5 @@ if [ $filtol -gt 1 ] ; then
 
 fi
 
-unset outfil statc trans filtyp filtol img first previous
-rm -f tmpfl639567
+unset outfil statc trans filtyp filtol img first previous dpth typs yer mnth day
+rm -f tmpfl639585
