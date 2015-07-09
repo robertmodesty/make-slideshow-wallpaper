@@ -6,7 +6,9 @@ Trns=5.0
 FilTyp="gif|jpg|png|bmp"
 # SortFil=Alphabetic
 SortFil=Random
-Dpth=30
+Dpth=30 # at most levels of directories been include
+# The line under here helps to setup the wallpaper automaticlly,
+# comment it with octothorpe if you want do that yourself.
 Autoset=on ; XmlFilPath=$HOME/.config
 
 ImgFils=$(
