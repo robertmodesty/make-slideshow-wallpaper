@@ -1,52 +1,53 @@
 #!/bin/bash
-outfil=background-2.xml
-ststc=1795.0
+
+outfil=background.xml
+statc=1795.0
 trans=5.0
-echo "<background>" > $outfil
-echo "  <starttime>" >> $outfil
-echo "    <year>2009</year>" >> $outfil
-echo "    <month>08</month>" >> $outfil
-echo "    <day>04</day>" >> $outfil
-echo "    <hour>00</hour>" >> $outfil
-echo "    <minute>00</minute>" >> $outfil
-echo "    <second>00</second>" >> $outfil
-echo "  </starttime>" >> $outfil
-echo "<!-- This animation will start at 2009/08/04 00:00. -->" >> $outfil
+filtyp="*.gif *.jpg *.png *.bmp"
 
-for img in $(ls *.jpg)
-do
-  
+ls $filtyp 1> tmpfl639567 2> /dev/null
 
-  if test -z $previous ; then
-    first=$img
-    echo "  <static>" >> $outfil
-    echo "    <duration>"$ststc"</duration>" >> $outfil
-    echo "    <file>"$PWD"/"$img"</file>" >> $outfil
-    echo "  </static>" >> $outfil
-  fi
+filtol=$(wc -l tmpfl639567 | cut -d " " -f1)
 
-  if test $previous ; then
+if [ $filtol -gt 1 ] ; then
+  img=$(head -n1 tmpfl639567)
+  first=$img
+  echo "<background>" > $outfil
+  echo "  <starttime>" >> $outfil
+  echo "    <year>2009</year>" >> $outfil
+  echo "    <month>08</month>" >> $outfil
+  echo "    <day>04</day>" >> $outfil
+  echo "    <hour>00</hour>" >> $outfil
+  echo "    <minute>00</minute>" >> $outfil
+  echo "    <second>00</second>" >> $outfil
+  echo "  </starttime>" >> $outfil
+  echo "<!-- This animation will start at 2009/08/04 00:00. -->" >> $outfil
+  echo "  <static>" >> $outfil
+  echo "    <duration>"$statc"</duration>" >> $outfil
+  echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+  echo "  </static>" >> $outfil
+
+  for (( filnbr=2; filnbr <= filtol; filnbr++ )) ; do
+    previous=$img
+    img="$(tail -n+$filnbr tmpfl639567 | head -n1)"
     echo "  <transition>" >> $outfil
     echo "    <duration>"$trans"</duration>" >> $outfil
     echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
     echo "    <to>"$PWD"/"$img"</to>" >> $outfil
     echo "  </transition>" >> $outfil
     echo "  <static>" >> $outfil
-    echo "    <duration>"$ststc"</duration>" >> $outfil
+    echo "    <duration>"$statc"</duration>" >> $outfil
     echo "    <file>"$PWD"/"$img"</file>" >> $outfil
     echo "  </static>" >> $outfil
-  fi
+  done
 
-  previous=$img
+  echo "  <transition>" >> $outfil
+  echo "    <duration>"$trans"</duration>" >> $outfil
+  echo "    <from>"$PWD"/"$img"</from>" >> $outfil
+  echo "    <to>"$PWD"/"$first"</to>" >> $outfil
+  echo "  </transition>" >> $outfil
+  echo "</background>" >> $outfil
+fi
 
-done
-
-echo "  <transition>" >> $outfil
-echo "    <duration>"$trans"</duration>" >> $outfil
-echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
-echo "    <to>"$PWD"/"$first"</to>" >> $outfil
-echo "  </transition>" >> $outfil
-
-echo "</background>" >> $outfil
-
-unset outfil statc trans previous img first
+unset outfil statc trans filtyp filtol img first filnbr previous
+rm -f tmpfl639567
