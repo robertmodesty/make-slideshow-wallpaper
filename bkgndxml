@@ -5,40 +5,48 @@ statc=1795.0
 trans=5.0
 filtyp="*.gif *.jpg *.png *.bmp"
 
-ls $filtyp 1> tmpfl639567 2> /dev/null
+ls $filtyp 1> tmpfl6395671 2> /dev/null
+filtol=$(wc -l tmpfl6395671 | cut -d " " -f1)
+sed 's/ /jTqd-_u/g' tmpfl6395671 > tmpfl639567
+rm -f tmpfl6395671
 
-filtol=$(wc -l tmpfl639567 | cut -d " " -f1)
 
 if [ $filtol -gt 1 ] ; then
-  img=$(head -n1 tmpfl639567)
-  first=$img
-  echo "<background>" > $outfil
-  echo "  <starttime>" >> $outfil
-  echo "    <year>2009</year>" >> $outfil
-  echo "    <month>08</month>" >> $outfil
-  echo "    <day>04</day>" >> $outfil
-  echo "    <hour>00</hour>" >> $outfil
-  echo "    <minute>00</minute>" >> $outfil
-  echo "    <second>00</second>" >> $outfil
-  echo "  </starttime>" >> $outfil
-  echo "<!-- This animation will start at 2009/08/04 00:00. -->" >> $outfil
-  echo "  <static>" >> $outfil
-  echo "    <duration>"$statc"</duration>" >> $outfil
-  echo "    <file>"$PWD"/"$img"</file>" >> $outfil
-  echo "  </static>" >> $outfil
+  for img in $(cat tmpfl639567)
+  do
 
-  for (( filnbr=2; filnbr <= filtol; filnbr++ )) ; do
-    previous=$img
-    img="$(tail -n+$filnbr tmpfl639567 | head -n1)"
-    echo "  <transition>" >> $outfil
-    echo "    <duration>"$trans"</duration>" >> $outfil
-    echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
-    echo "    <to>"$PWD"/"$img"</to>" >> $outfil
-    echo "  </transition>" >> $outfil
-    echo "  <static>" >> $outfil
-    echo "    <duration>"$statc"</duration>" >> $outfil
-    echo "    <file>"$PWD"/"$img"</file>" >> $outfil
-    echo "  </static>" >> $outfil
+    if [ -z $previous ] ; then
+      first=$img
+      echo "<background>" > $outfil
+      echo "  <starttime>" >> $outfil
+      echo "    <year>2009</year>" >> $outfil
+      echo "    <month>08</month>" >> $outfil
+      echo "    <day>04</day>" >> $outfil
+      echo "    <hour>00</hour>" >> $outfil
+      echo "    <minute>00</minute>" >> $outfil
+      echo "    <second>00</second>" >> $outfil
+      echo "  </starttime>" >> $outfil
+      echo "<!-- This animation will start at 2009/08/04 00:00. -->" >> $outfil
+      echo "  <static>" >> $outfil
+      echo "    <duration>"$statc"</duration>" >> $outfil
+      echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+      echo "  </static>" >> $outfil
+    fi
+
+    if [ $previous ] ; then
+      echo "  <transition>" >> $outfil
+      echo "    <duration>"$trans"</duration>" >> $outfil
+      echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
+      echo "    <to>"$PWD"/"$img"</to>" >> $outfil
+      echo "  </transition>" >> $outfil
+      echo "  <static>" >> $outfil
+      echo "    <duration>"$statc"</duration>" >> $outfil
+      echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+      echo "  </static>" >> $outfil
+    fi
+
+  previous=$img
+
   done
 
   echo "  <transition>" >> $outfil
@@ -47,7 +55,12 @@ if [ $filtol -gt 1 ] ; then
   echo "    <to>"$PWD"/"$first"</to>" >> $outfil
   echo "  </transition>" >> $outfil
   echo "</background>" >> $outfil
+
+  mv $outfil a$outfil
+  sed 's/jTqd-_u/ /g' a$outfil > $outfil
+  rm -f a$outfil
+
 fi
 
-unset outfil statc trans filtyp filtol img first filnbr previous
+unset outfil statc trans filtyp filtol img first previous
 rm -f tmpfl639567
