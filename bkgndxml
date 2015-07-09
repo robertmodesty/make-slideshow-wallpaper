@@ -3,7 +3,7 @@
 outfil=background.xml
 statc=1795.0
 trans=5.0
-filtyp="*.gif *.jpg *.png *.bmp"
+filtyp="*.gif *.GIF *.jpg *.JPG *.png *.PNG *.bmp *.BMP"
 
 ls $filtyp 1> tmpfl6395671 2> /dev/null
 filtol=$(wc -l tmpfl6395671 | cut -d " " -f1)
