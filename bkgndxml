@@ -1,0 +1,52 @@
+#!/bin/bash
+outfil=background-2.xml
+ststc=1795.0
+trans=5.0
+echo "<background>" > $outfil
+echo "  <starttime>" >> $outfil
+echo "    <year>2009</year>" >> $outfil
+echo "    <month>08</month>" >> $outfil
+echo "    <day>04</day>" >> $outfil
+echo "    <hour>00</hour>" >> $outfil
+echo "    <minute>00</minute>" >> $outfil
+echo "    <second>00</second>" >> $outfil
+echo "  </starttime>" >> $outfil
+echo "<!-- This animation will start at 2009/08/04 00:00. -->" >> $outfil
+
+for img in $(ls *.jpg)
+do
+  
+
+  if test -z $previous ; then
+    first=$img
+    echo "  <static>" >> $outfil
+    echo "    <duration>"$ststc"</duration>" >> $outfil
+    echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+    echo "  </static>" >> $outfil
+  fi
+
+  if test $previous ; then
+    echo "  <transition>" >> $outfil
+    echo "    <duration>"$trans"</duration>" >> $outfil
+    echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
+    echo "    <to>"$PWD"/"$img"</to>" >> $outfil
+    echo "  </transition>" >> $outfil
+    echo "  <static>" >> $outfil
+    echo "    <duration>"$ststc"</duration>" >> $outfil
+    echo "    <file>"$PWD"/"$img"</file>" >> $outfil
+    echo "  </static>" >> $outfil
+  fi
+
+  previous=$img
+
+done
+
+echo "  <transition>" >> $outfil
+echo "    <duration>"$trans"</duration>" >> $outfil
+echo "    <from>"$PWD"/"$previous"</from>" >> $outfil
+echo "    <to>"$PWD"/"$first"</to>" >> $outfil
+echo "  </transition>" >> $outfil
+
+echo "</background>" >> $outfil
+
+unset outfil statc trans previous img first
