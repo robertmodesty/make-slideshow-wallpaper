@@ -1,15 +1,17 @@
 #!/bin/bash
 
+#libglib2.0-bin
+#gsettings set org.gnome.desktop.background picture-uri file:///
 OutFil=background.xml
 Statc=595.0
 Trns=5.0
 FilTyp="gif|jpg|png|bmp"
-SortFil=Alphabetic
-# SortFil=Random
+# SortFil=Alphabetic
+SortFil=Random
 Dpth=30
 
 ImgFils=$(
-  find $PWD -maxdepth $Dpth -regextype posix-extended \
+  find -L $PWD -maxdepth $Dpth -regextype posix-extended \
                       -iregex ".*\.($FilTyp)" 2> /dev/null )
 
 if  [ "$SortFil" == "Random" ] ; then
@@ -58,8 +60,8 @@ if [ $filtol -gt 1 ] ; then
   ) > $OutFil
 
 else
-  /usr/bin/zenity --warning --title="Error!" \
-     --text="Need two image files at least!"  > /dev/null 2>&1
-  echo -e "\nError!\nNeed two image files at least!\n"
+  /usr/bin/zenity --warning --title='Error!' \
+     --text='Need two image files at least!'  > /dev/null 2>&1
+  echo -e '\nError!\nNeed two image files at least!\n'
   exit 1
 fi
