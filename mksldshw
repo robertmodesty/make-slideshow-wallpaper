@@ -24,9 +24,14 @@ fi
 filtol=$(echo -e "$ImgFils" | wc -l | cut -d " " -f1)
 
 if [ $filtol -gt 1 ] ; then
-  Yer=$(date +%Y)
-  Mnth=$(date +%m)
-  Day=$(date +%d)
+  eval $( date +"
+                Yer=%Y
+                Mnth=%m
+                Day=%d
+                Hour=%H
+                Minute=%M
+                Second=%S
+         ")
   Head="  <static>\n    <duration>$Statc</duration>\n    <file>"
   Tail="</file>\n  </static>"
   FrmHead="  <transition>\n    <duration>$Trns</duration>\n    <from>"
@@ -40,11 +45,11 @@ if [ $filtol -gt 1 ] ; then
     echo "    <year>$Yer</year>"
     echo "    <month>$Mnth</month>"
     echo "    <day>$Day</day>"
-    echo "    <hour>00</hour>"
-    echo "    <minute>00</minute>"
-    echo "    <second>00</second>"
+    echo "    <hour>$Hour</hour>"
+    echo "    <minute>$Minute</minute>"
+    echo "    <second>$Second</second>"
     echo "  </starttime>"
-    echo "<!-- This animation starts at $Yer/$Mnth/$Day 00:00. -->"
+    echo "<!-- This animation starts at $Yer/$Mnth/$Day $Hour:$Minute:$Second. -->"
 
     if [ "$Trns" == "0" ] ; then
       echo -e "$ImgFils" | sed "s|^\(.*\)$|$Head\0$Tail|"
