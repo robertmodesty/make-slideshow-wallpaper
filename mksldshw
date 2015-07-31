@@ -91,25 +91,29 @@ function generate_slide_show_xml() {
 }
 
 
+function set_wallpaper() {
+  local x
+
+  if [ -z "$XmlFilPath" ] ; then
+    XmlFilPath="$PWD"
+  else
+    mkdir -p "$XmlFilPath"
+    mv -f "$OutFil" "$XmlFilPath/$OutFil"
+  fi
+  x=$(gnome-session --version)
+  x=${x#* }
+  if [ "${x%%.*}" == "3" ] ; then
+    gsettings set org.gnome.desktop.background picture-uri "file://$XmlFilPath/$OutFil"
+  elif [ "${x%%.*}" == "2" ] ; then
+    gconftool --set --type=string /desktop/gnome/background/picture_filename "$XmlFilPath/$OutFil"
+  fi
+}
+
 find_image_files
 
 error_exit_if_too_less_image_file
 
 generate_slide_show_xml > "$OutFil"
 
-  if [ "$Autoset" == "on" ] ; then
-    if [ -z "$XmlFilPath" ] ; then
-      XmlFilPath="$PWD"
-    else
-      mkdir -p "$XmlFilPath"
-      mv -f "$OutFil" "$XmlFilPath/$OutFil"
-    fi
-    x=$(gnome-session --version)
-    x=${x#* }
-    if [ "${x%%.*}" == "3" ] ; then
-      gsettings set org.gnome.desktop.background picture-uri "file://$XmlFilPath/$OutFil"
-    elif [ "${x%%.*}" == "2" ] ; then
-      gconftool --set --type=string /desktop/gnome/background/picture_filename "$XmlFilPath/$OutFil"
-    fi
-  fi
+if [ "$Autoset" == "on" ] ; then set_wallpaper ; fi
 
