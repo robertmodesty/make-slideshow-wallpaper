@@ -30,11 +30,27 @@ function find_image_files() {
 }
 
 
+function error_exit_if_too_less_image_file() {
+  local filtol=$( echo -e "$ImgFils" \
+                  | wc -l \
+                  | cut -d " " -f1
+                )
+
+  if [ $filtol -lt 2 ] ; then
+    /usr/bin/zenity --warning \
+                    --title='Error!' \
+                    --text='Need two image files at least!' \
+          > /dev/null 2>&1
+    echo -e '\nError!\nNeed two image files at least!\n'
+    exit 1
+  fi
+}
+
+
 find_image_files
 
-filtol=$(echo -e "$ImgFils" | wc -l | cut -d " " -f1)
+error_exit_if_too_less_image_file
 
-if [ $filtol -gt 1 ] ; then
   eval $( date +"
                 Yer=%Y
                 Mnth=%m
@@ -92,9 +108,3 @@ if [ $filtol -gt 1 ] ; then
     fi
   fi
 
-else
-  /usr/bin/zenity --warning --title='Error!' \
-     --text='Need two image files at least!'  > /dev/null 2>&1
-  echo -e '\nError!\nNeed two image files at least!\n'
-  exit 1
-fi
