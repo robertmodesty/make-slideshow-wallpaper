@@ -109,11 +109,18 @@ function set_wallpaper() {
   fi
 }
 
-find_image_files
 
-error_exit_if_too_less_image_file
+function main() {
 
-generate_slide_show_xml > "$OutFil"
+  find_image_files
 
-if [ "$Autoset" == "on" ] ; then set_wallpaper ; fi
+  error_exit_if_too_less_image_file
 
+  generate_slide_show_xml > "$OutFil"
+
+  if [ "$Autoset" == "on" ] ; then set_wallpaper ; fi
+
+}
+
+
+main
