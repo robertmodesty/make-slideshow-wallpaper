@@ -47,50 +47,55 @@ function error_exit_if_too_less_image_file() {
 }
 
 
-find_image_files
-
-error_exit_if_too_less_image_file
-
+function generate_slide_show_xml() {
   eval $( date +"
-                Yer=%Y
+          local Yer=%Y
                 Mnth=%m
                 Day=%d
                 Hour=%H
                 Minute=%M
                 Second=%S
          ")
-  Head="  <static>\n    <duration>$Statc</duration>\n    <file>"
-  Tail="</file>\n  </static>"
-  FrmHead="  <transition>\n    <duration>$Trns</duration>\n    <from>"
-  FrmTail="</from>"
-  ToHead="    <to>"
-  ToTail="</to>\n  </transition>"
+  local Head="  <static>\n    <duration>$Statc</duration>\n    <file>"
+  local Tail="</file>\n  </static>"
+  local FrmHead="  <transition>\n    <duration>$Trns</duration>\n    <from>"
+  local FrmTail="</from>"
+  local ToHead="    <to>"
+  local ToTail="</to>\n  </transition>"
+  local FstFil
 
-  (
-    echo "<background>"
-    echo "  <starttime>"
-    echo "    <year>$Yer</year>"
-    echo "    <month>$Mnth</month>"
-    echo "    <day>$Day</day>"
-    echo "    <hour>$Hour</hour>"
-    echo "    <minute>$Minute</minute>"
-    echo "    <second>$Second</second>"
-    echo "  </starttime>"
-    echo "<!-- This animation starts at $Yer/$Mnth/$Day $Hour:$Minute:$Second. -->"
+  echo "<background>"
+  echo "  <starttime>"
+  echo "    <year>$Yer</year>"
+  echo "    <month>$Mnth</month>"
+  echo "    <day>$Day</day>"
+  echo "    <hour>$Hour</hour>"
+  echo "    <minute>$Minute</minute>"
+  echo "    <second>$Second</second>"
+  echo "  </starttime>"
+  echo "<!-- This animation starts at $Yer/$Mnth/$Day $Hour:$Minute:$Second. -->"
 
-    if [ "$Trns" == "0" ] ; then
-      echo -e "$ImgFils" | sed "s|^\(.*\)$|$Head\0$Tail|"
-    else
-      FstFil=$( echo -e "$ImgFils" | head -n 1 )
-      echo -e "${Head}${FstFil}${Tail}"
-      echo -e "${FrmHead}${FstFil}${FrmTail}"
-      echo -e "$ImgFils" | tail -n +2 \
-       | sed "s|^\(.*\)$|$ToHead\0$ToTail\n$Head\0$Tail\n$FrmHead\0$FrmTail|"
-      echo -e "${ToHead}${FstFil}${ToTail}"
-    fi
+  if [ "$Trns" == "0" ] ; then
+    echo -e "$ImgFils" | sed "s|^\(.*\)$|$Head\0$Tail|"
+  else
+    FstFil=$( echo -e "$ImgFils" | head -n 1 )
+    echo -e "${Head}${FstFil}${Tail}"
+    echo -e "${FrmHead}${FstFil}${FrmTail}"
+    echo -e "$ImgFils" \
+     | tail -n +2 \
+     | sed "s|^\(.*\)$|$ToHead\0$ToTail\n$Head\0$Tail\n$FrmHead\0$FrmTail|"
+    echo -e "${ToHead}${FstFil}${ToTail}"
+  fi
 
-    echo "</background>"
-  ) > "$OutFil"
+  echo "</background>"
+}
+
+
+find_image_files
+
+error_exit_if_too_less_image_file
+
+generate_slide_show_xml > "$OutFil"
 
   if [ "$Autoset" == "on" ] ; then
     if [ -z "$XmlFilPath" ] ; then
