@@ -11,15 +11,26 @@ Dpth=30 # at most levels of directories been include
 # comment it with octothorpe if you want do that yourself.
 Autoset=on ; XmlFilPath=$HOME/.config
 
-ImgFils=$(
-  find -L $PWD -maxdepth $Dpth -regextype posix-extended \
-                      -iregex ".*\.($FilTyp)" 2> /dev/null )
 
-if  [ "$SortFil" == "Random" ] ; then
-  ImgFils=$( echo -e "$ImgFils" | sort -R )
-elif  [ "$SortFil" == "Alphabetic" ] ; then
-  ImgFils=$( echo -e "$ImgFils" | sort )
-fi
+function find_image_files() {
+  ImgFils=$(
+            find -L $PWD \
+                 -maxdepth $Dpth \
+                 -regextype posix-extended \
+                 -iregex \
+                 ".*\.($FilTyp)" \
+              2> /dev/null
+           )
+
+  if  [ "$SortFil" == "Random" ] ; then
+    ImgFils=$( echo -e "$ImgFils" | sort -R )
+  elif  [ "$SortFil" == "Alphabetic" ] ; then
+    ImgFils=$( echo -e "$ImgFils" | sort )
+  fi
+}
+
+
+find_image_files
 
 filtol=$(echo -e "$ImgFils" | wc -l | cut -d " " -f1)
 
