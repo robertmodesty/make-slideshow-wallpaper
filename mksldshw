@@ -13,25 +13,25 @@ Autoset=on ; XmlFilPath=$HOME/.config
 
 
 function find_image_files() {
-  ImgFils=$(
-            find -L $PWD \
-                 -maxdepth $Dpth \
-                 -regextype posix-extended \
-                 -iregex \
-                 ".*\.($FilTyp)" \
-              2> /dev/null
-           )
+  BOARD_ImgFils=$(
+                  find -L $PWD \
+                       -maxdepth $Dpth \
+                       -regextype posix-extended \
+                       -iregex \
+                       ".*\.($FilTyp)" \
+                    2> /dev/null
+                 )
 
   if  [ "$SortFil" == "Random" ] ; then
-    ImgFils=$( echo -e "$ImgFils" | sort -R )
+    BOARD_ImgFils=$( echo -e "$BOARD_ImgFils" | sort -R )
   elif  [ "$SortFil" == "Alphabetic" ] ; then
-    ImgFils=$( echo -e "$ImgFils" | sort )
+    BOARD_ImgFils=$( echo -e "$BOARD_ImgFils" | sort )
   fi
 }
 
 
 function error_exit_if_too_less_image_file() {
-  local filtol=$( echo -e "$ImgFils" \
+  local filtol=$( echo -e "$BOARD_ImgFils" \
                   | wc -l \
                   | cut -d " " -f1
                 )
@@ -76,12 +76,12 @@ function generate_slide_show_xml() {
   echo "<!-- This animation starts at $Yer/$Mnth/$Day $Hour:$Minute:$Second. -->"
 
   if [ "$Trns" == "0" ] ; then
-    echo -e "$ImgFils" | sed "s|^\(.*\)$|$Head\0$Tail|"
+    echo -e "$BOARD_ImgFils" | sed "s|^\(.*\)$|$Head\0$Tail|"
   else
-    FstFil=$( echo -e "$ImgFils" | head -n 1 )
+    FstFil=$( echo -e "$BOARD_ImgFils" | head -n 1 )
     echo -e "${Head}${FstFil}${Tail}"
     echo -e "${FrmHead}${FstFil}${FrmTail}"
-    echo -e "$ImgFils" \
+    echo -e "$BOARD_ImgFils" \
      | tail -n +2 \
      | sed "s|^\(.*\)$|$ToHead\0$ToTail\n$Head\0$Tail\n$FrmHead\0$FrmTail|"
     echo -e "${ToHead}${FstFil}${ToTail}"
