@@ -6,5 +6,5 @@ The reference of the image files contains full path, so the XML file can be move
 
 All settings set in the beginning of the program, user can set then by modifying the code.
 
-With the "Autoset" on, the XML file will be moved to ~/.config and this program will try to set the wallpaper automatically.  If it doesn't work out, user may still set that by himself.
+With the "_Autoset" on, the XML file will be moved to ~/.config and this program will try to set the wallpaper automatically.  If it doesn't work out, user may still set that by himself.
 

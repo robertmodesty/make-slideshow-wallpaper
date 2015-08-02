@@ -1,42 +1,44 @@
 #!/bin/bash
 
-OutFil=background.xml
-Statc=595.0
-Trns=5.0
-FilTyp="gif|jpg|png|bmp"
-# SortFil=Alphabetic
-SortFil=Random
-Dpth=30 # at most levels of directories been include
+##########    Make Slideshow Wallpaper   by Freedman   ##########
+
+_OutputFile=background.xml
+_StaticTime=595.0
+_TransitionTime=5.0
+_FileType="gif|jpg|png|bmp"
+# _SortFiles=Alphabetic
+_SortFiles=Random
+_Depth=30 # at most levels of directories been include
 # The line under here helps to setup the wallpaper automaticlly,
 # comment it with octothorpe if you want do that yourself.
-Autoset=on ; XmlFilPath=$HOME/.config
+_Autoset=on ; _AutosetPath=$HOME/.config
 
 
 function find_image_files() {
   BOARD_ImgFils=$(
                   find -L $PWD \
-                       -maxdepth $Dpth \
+                       -maxdepth $_Depth \
                        -regextype posix-extended \
                        -iregex \
-                       ".*\.($FilTyp)" \
+                       ".*\.($_FileType)" \
                     2> /dev/null
                  )
 
-  if  [ "$SortFil" == "Random" ] ; then
+  if  [ "$_SortFiles" == "Random" ] ; then
     BOARD_ImgFils=$( echo -e "$BOARD_ImgFils" | sort -R )
-  elif  [ "$SortFil" == "Alphabetic" ] ; then
+  elif  [ "$_SortFiles" == "Alphabetic" ] ; then
     BOARD_ImgFils=$( echo -e "$BOARD_ImgFils" | sort )
   fi
 }
 
 
 function error_exit_if_too_less_image_file() {
-  local filtol=$( echo -e "$BOARD_ImgFils" \
+  local FilTotl=$( echo -e "$BOARD_ImgFils" \
                   | wc -l \
                   | cut -d " " -f1
                 )
 
-  if [ $filtol -lt 2 ] ; then
+  if [ $FilFotl -lt 2 ] ; then
     /usr/bin/zenity --warning \
                     --title='Error!' \
                     --text='Need two image files at least!' \
@@ -56,9 +58,9 @@ function generate_slide_show_xml() {
                 Minute=%M
                 Second=%S
          ")
-  local Head="  <static>\n    <duration>$Statc</duration>\n    <file>"
+  local Head="  <static>\n    <duration>$_StaticTime</duration>\n    <file>"
   local Tail="</file>\n  </static>"
-  local FrmHead="  <transition>\n    <duration>$Trns</duration>\n    <from>"
+  local FrmHead="  <transition>\n    <duration>$_TransitionTime</duration>\n    <from>"
   local FrmTail="</from>"
   local ToHead="    <to>"
   local ToTail="</to>\n  </transition>"
@@ -75,7 +77,7 @@ function generate_slide_show_xml() {
   echo "  </starttime>"
   echo "<!-- This animation starts at $Yer/$Mnth/$Day $Hour:$Minute:$Second. -->"
 
-  if [ "$Trns" == "0" ] ; then
+  if [ "$_TransitionTime" == "0" ] ; then
     echo -e "$BOARD_ImgFils" | sed "s|^\(.*\)$|$Head\0$Tail|"
   else
     FstFil=$( echo -e "$BOARD_ImgFils" | head -n 1 )
@@ -94,18 +96,18 @@ function generate_slide_show_xml() {
 function set_wallpaper() {
   local x
 
-  if [ -z "$XmlFilPath" ] ; then
-    XmlFilPath="$PWD"
+  if [ -z "$_AutosetPath" ] ; then
+    _AutosetPath="$PWD"
   else
-    mkdir -p "$XmlFilPath"
-    mv -f "$OutFil" "$XmlFilPath/$OutFil"
+    mkdir -p "$_AutosetPath"
+    mv -f "$_OutputFile" "$_AutosetPath/$_OutputFile"
   fi
   x=$(gnome-session --version)
   x=${x#* }
   if [ "${x%%.*}" == "3" ] ; then
-    gsettings set org.gnome.desktop.background picture-uri "file://$XmlFilPath/$OutFil"
+    gsettings set org.gnome.desktop.background picture-uri "file://$_AutosetPath/$_OutputFile"
   elif [ "${x%%.*}" == "2" ] ; then
-    gconftool --set --type=string /desktop/gnome/background/picture_filename "$XmlFilPath/$OutFil"
+    gconftool --set --type=string /desktop/gnome/background/picture_filename "$_AutosetPath/$_OutputFile"
   fi
 }
 
@@ -116,9 +118,9 @@ function main() {
 
   error_exit_if_too_less_image_file
 
-  generate_slide_show_xml > "$OutFil"
+  generate_slide_show_xml > "$_OutputFile"
 
-  if [ "$Autoset" == "on" ] ; then set_wallpaper ; fi
+  if [ "$_Autoset" == "on" ] ; then set_wallpaper ; fi
 
 }
 
