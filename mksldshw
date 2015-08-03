@@ -38,7 +38,7 @@ function error_exit_if_too_less_image_file() {
                   | cut -d " " -f1
                 )
 
-  if [ $FilFotl -lt 2 ] ; then
+  if [ $FilTotl -lt 2 ] ; then
     /usr/bin/zenity --warning \
                     --title='Error!' \
                     --text='Need two image files at least!' \
