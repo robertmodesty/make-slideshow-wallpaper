@@ -93,6 +93,21 @@ function generate_slide_show_xml() {
 }
 
 
+function distribution_n_release() {
+  local distri reles
+
+  distri="$(lsb_release -i)"
+  distri="$(echo $distri)"
+  distri="${distri##* } "
+
+  reles="$(lsb_release -r)"
+  reles="$(echo $reles)"
+  reles="${reles##* }"
+
+  echo $distri $reles
+}
+
+
 function set_wallpaper() {
   local x
 
