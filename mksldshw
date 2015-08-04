@@ -123,7 +123,22 @@ function move_output_file() {
 
 
 function set_background() {
-  local x
+  local x distro
+
+  distro="$( distribution_n_release )"
+
+  case "$distro" in
+    "Ubuntu 15.04")
+      case "$DESKTOP_SESSION" in
+        ubuntu)
+          move_output_file
+          gsettings set org.gnome.desktop.background picture-uri \
+                          "file://$_AutosetPath/$_OutputFile"
+          return 0
+          ;;
+      esac
+      ;;
+  esac
 
   move_output_file
 
