@@ -111,8 +111,7 @@ function distribution_n_release() {
 }
 
 
-function set_wallpaper() {
-  local x
+function move_output_file() {
 
   if [ -z "$_AutosetPath" ] ; then
     _AutosetPath="$PWD"
@@ -120,6 +119,14 @@ function set_wallpaper() {
     mkdir -p "$_AutosetPath"
     mv -f "$_OutputFile" "$_AutosetPath/$_OutputFile"
   fi
+}
+
+
+function set_background() {
+  local x
+
+  move_output_file
+
   x=$(gnome-session --version)
   x=${x#* }
   if [ "${x%%.*}" == "3" ] ; then
@@ -138,7 +145,7 @@ function main() {
 
   generate_slide_show_xml > "$_OutputFile"
 
-  if [ "$_Autoset" == "on" ] ; then set_wallpaper ; fi
+  if [ "$_Autoset" == "on" ] ; then set_background ; fi
 
 }
 
