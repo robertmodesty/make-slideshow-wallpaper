@@ -136,6 +136,12 @@ function set_background() {
                           "file://$_AutosetPath/$_OutputFile"
           return 0
           ;;
+        cinnamon*)
+          move_output_file
+          gsettings set org.cinnamon.desktop.background picture-uri \
+                          "file://$_AutosetPath/$_OutputFile"
+          return 0
+          ;;
       esac
       ;;
   esac
