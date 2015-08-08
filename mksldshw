@@ -134,23 +134,30 @@ function set_background() {
           move_output_file
           gsettings set org.gnome.desktop.background picture-uri \
                           "file://$_AutosetPath/$_OutputFile"
-          return 0
           ;;
         cinnamon*)
           move_output_file
           gsettings set org.cinnamon.desktop.background picture-uri \
                           "file://$_AutosetPath/$_OutputFile"
-          return 0
           ;;
         mate)
           move_output_file
           gsettings set org.mate.background picture-filename \
                           "$_AutosetPath/$_OutputFile"
-          return 0
           ;;
       esac
       ;;
-  esac
+
+    "Ubuntu 10.04")
+      if [ "$DESKTOP_SESSION" == "gnome" ] ; then
+        move_output_file
+        gconftool --set --type=string \
+                    /desktop/gnome/background/picture_filename \
+                                   "$_AutosetPath/$_OutputFile"
+      fi
+      ;;
+
+    *)
 
   move_output_file
 
@@ -158,9 +165,10 @@ function set_background() {
   x=${x#* }
   if [ "${x%%.*}" == "3" ] ; then
     gsettings set org.gnome.desktop.background picture-uri "file://$_AutosetPath/$_OutputFile"
-  elif [ "${x%%.*}" == "2" ] ; then
-    gconftool --set --type=string /desktop/gnome/background/picture_filename "$_AutosetPath/$_OutputFile"
   fi
+
+      ;;
+  esac
 }
 
 
