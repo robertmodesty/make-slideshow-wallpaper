@@ -148,7 +148,7 @@ function set_background() {
       esac
       ;;
 
-    "Ubuntu 10.04")
+    "Ubuntu 10."*)
       if [ "$DESKTOP_SESSION" == "gnome" ] ; then
         move_output_file
         gconftool --set --type=string \
