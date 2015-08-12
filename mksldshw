@@ -157,6 +157,26 @@ function set_background() {
       fi
       ;;
 
+    "Debian 8"*)
+      case "$XDG_CURRENT_DESKTOP" in
+        GNOME*)
+          move_output_file
+          gsettings set org.gnome.desktop.background picture-uri \
+                          "file://$_AutosetPath/$_OutputFile"
+          ;;
+        X-Cinnamon)
+          move_output_file
+          gsettings set org.cinnamon.desktop.background picture-uri \
+                          "file://$_AutosetPath/$_OutputFile"
+          ;;
+        MATE)
+          move_output_file
+          gsettings set org.mate.background picture-filename \
+                          "$_AutosetPath/$_OutputFile"
+          ;;
+      esac
+      ;;
+
     *)
 
   move_output_file
