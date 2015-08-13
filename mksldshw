@@ -177,6 +177,18 @@ function set_background() {
       esac
       ;;
 
+    "LinuxMint 17"*)
+      if [ "$XDG_CURRENT_DESKTOP" == "X-Cinnamon" ] ; then
+          move_output_file
+          gsettings set org.cinnamon.desktop.background picture-uri \
+                          "file://$_AutosetPath/$_OutputFile"
+      elif [ "$DESKTOP_SESSION" == "mate" ] ; then
+          move_output_file
+          gsettings set org.mate.background picture-filename \
+                          "$_AutosetPath/$_OutputFile"
+      fi
+      ;;
+
     *)
 
   move_output_file
