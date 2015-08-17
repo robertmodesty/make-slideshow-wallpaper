@@ -190,15 +190,13 @@ function set_background() {
       ;;
 
     *)
-
-  move_output_file
-
-  x=$(gnome-session --version)
-  x=${x#* }
-  if [ "${x%%.*}" == "3" ] ; then
-    gsettings set org.gnome.desktop.background picture-uri "file://$_AutosetPath/$_OutputFile"
-  fi
-
+      x=$(gnome-session --version)
+      x=${x#* }
+      if [ "${x%%.*}" == "3" ] ; then
+        move_output_file
+        gsettings set org.gnome.desktop.background picture-uri \
+                          "file://$_AutosetPath/$_OutputFile"
+      fi
       ;;
   esac
 }
