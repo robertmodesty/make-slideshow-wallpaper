@@ -2,17 +2,17 @@
 
 ##########    Make Slideshow Wallpaper   by Freedman   ##########
 
-_OutputFile=background.xml
-_StaticTime=595.0
-_TransitionTime=5.0
-_FileType="gif|jpg|png|bmp"
-# _SortFiles=Alphabetic
-_SortFiles=Random
-_Depth=30 # at most levels of directories been include
+readonly _OutputFile=background.xml
+readonly _StaticTime=595.0
+readonly _TransitionTime=5.0
+readonly _FileType="gif|jpg|png|bmp"
+# readonly _SortFiles=Alphabetic
+readonly _SortFiles=Random
+readonly _Depth=30 # at most levels of directories been include
 # The line under here helps to setup the wallpaper automaticlly,
 # comment it with octothorpe if you want do that yourself.
-_Autoset=on ; _AutosetPath=$HOME/.config
-_StartNow=on
+readonly _Autoset=on _AutosetPath=$HOME/.config
+readonly _StartNow=on
 
 
 function find_image_files() {
