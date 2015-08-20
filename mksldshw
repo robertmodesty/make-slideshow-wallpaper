@@ -99,13 +99,23 @@ function generate_slide_show_xml() {
 function distribution_n_release() {
   local distri reles
 
-  distri="$(lsb_release -i)"
+  distri="$(lsb_release -i 2> /dev/null)"
   distri="$(echo $distri)"
-  distri="${distri##* } "
+  distri="${distri##* }"
 
-  reles="$(lsb_release -r)"
-  reles="$(echo $reles)"
-  reles="${reles##* }"
+  if [ -n "$distri" ] ; then
+    reles="$(lsb_release -r)"
+    reles="$(echo $reles)"
+    reles="${reles##* }"
+  else
+    distri="$(head -n1 /etc/issue)"
+    distri="$(echo $distri)"
+    distri="${distri%% *}"
+
+    reles="$( grep [0-9] /etc/issue \
+              | head -n1 \
+              | sed 's/^[^0-9]*//' )"
+  fi
 
   echo $distri $reles
 }
@@ -128,7 +138,7 @@ function set_background() {
   distro="$( distribution_n_release )"
 
   case "$distro" in
-    "Ubuntu 15.04"|"Ubuntu 14.04"|"Ubuntu 12.04")
+    "Ubuntu 15.04"|"Ubuntu 14.04"|"Ubuntu 12.04"|"Fedora 22"*)
       case "$DESKTOP_SESSION" in
         ubuntu*|gnome*)
           move_output_file
