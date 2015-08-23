@@ -97,24 +97,30 @@ function generate_slide_show_xml() {
 
 
 function distribution_n_release() {
-  local distri reles
+  local distri reles issue
 
   distri="$(lsb_release -i 2> /dev/null)"
   distri="$(echo $distri)"
   distri="${distri##* }"
 
-  if [ -n "$distri" ] ; then
+  issue="$(head -n1 /etc/issue)"
+  issue="$(echo $issue)"
+  issue="${issue%% *}"
+
+  if [ -z "$distri" ] ; then
+    distri="$issue"
+    reles="$( grep [0-9] /etc/issue \
+              | head -n1 \
+              | sed 's/^[^0-9]*//' )"
+  elif [ "$issue" == "LMDE" ] ; then
+    distri="$issue"
     reles="$(lsb_release -r)"
     reles="$(echo $reles)"
     reles="${reles##* }"
   else
-    distri="$(head -n1 /etc/issue)"
-    distri="$(echo $distri)"
-    distri="${distri%% *}"
-
-    reles="$( grep [0-9] /etc/issue \
-              | head -n1 \
-              | sed 's/^[^0-9]*//' )"
+    reles="$(lsb_release -r)"
+    reles="$(echo $reles)"
+    reles="${reles##* }"
   fi
 
   echo $distri $reles
@@ -187,7 +193,7 @@ function set_background() {
       esac
       ;;
 
-    "LinuxMint 17"*)
+    "LinuxMint 17"*|"LMDE 2")
       if [ "$XDG_CURRENT_DESKTOP" == "X-Cinnamon" ] ; then
           move_output_file
           gsettings set org.cinnamon.desktop.background picture-uri \
