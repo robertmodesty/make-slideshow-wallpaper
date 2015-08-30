@@ -139,7 +139,7 @@ function move_output_file() {
 
 
 function set_background() {
-  local x distro
+  local gnome_version distro
 
   distro="$( distribution_n_release )"
 
@@ -206,9 +206,9 @@ function set_background() {
       ;;
 
     *)
-      x=$(gnome-session --version)
-      x=${x#* }
-      if [ "${x%%.*}" == "3" ] ; then
+      gnome_version=$(gnome-session --version)
+      gnome_version=${gnome_version#* }
+      if [ "${gnome_version%%.*}" == "3" ] ; then
         move_output_file
         gsettings set org.gnome.desktop.background picture-uri \
                           "file://$_AutosetPath/$_OutputFile"
@@ -224,7 +224,7 @@ function main() {
 
   error_exit_if_too_less_image_file
 
-  generate_slide_show_xml > "$_OutputFile"
+  generate_slide_show_xml > $_OutputFile
 
   if [ "$_Autoset" == "on" ] ; then set_background ; fi
 
