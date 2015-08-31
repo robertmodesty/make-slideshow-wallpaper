@@ -107,7 +107,12 @@ function distribution_n_release() {
   issue="$(echo $issue)"
   issue="${issue%% *}"
 
-  if [ -z "$distri" ] ; then
+  eval $(grep -e "^NAME=" -e "^VERSION=" /etc/os-release 2> /dev/null)
+
+  if [ "$NAME" == "CentOS Linux" ] ; then
+    distri="CentOS"
+    reles="$VERSION"
+  elif [ -z "$distri" ] ; then
     distri="$issue"
     reles="$( grep [0-9] /etc/issue \
               | head -n1 \
@@ -144,7 +149,8 @@ function set_background() {
   distro="$( distribution_n_release )"
 
   case "$distro" in
-    "Ubuntu 15.04"|"Ubuntu 14.04"|"Ubuntu 12.04"|"Fedora 22"*)
+    "Ubuntu 15.04"|"Ubuntu 14.04"|"Ubuntu 12.04"|"CentOS 7"* \
+    |"Fedora 22"*)
       case "$DESKTOP_SESSION" in
         ubuntu*|gnome*)
           move_output_file
