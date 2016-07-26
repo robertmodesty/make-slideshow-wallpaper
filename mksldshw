@@ -201,7 +201,7 @@ function set_background() {
       esac
       ;;
 
-    "LinuxMint 17"*|"LMDE 2")
+    "LinuxMint 1"[78]*|"LMDE 2")
       if [ "$XDG_CURRENT_DESKTOP" == "X-Cinnamon" ] ; then
           move_output_file
           gsettings set org.cinnamon.desktop.background picture-uri \
