@@ -109,16 +109,13 @@ function distribution_n_release() {
 
   eval $(grep -e "^NAME=" -e "^VERSION=" /etc/os-release 2> /dev/null)
 
-  if [ "$NAME" == "CentOS Linux" ] ; then
-    distri="CentOS"
-    reles="$VERSION"
-  elif [ -z "$distri" ] && [ ${#issue} -gt 2 ] ; then
+  if [ -z "$distri" ] && [ ${#issue} -gt 2 ] ; then
     distri="$issue"
     reles="$( grep [0-9] /etc/issue \
               | head -n1 \
               | sed 's/^[^0-9]*//' )"
-  elif [ "$NAME" == "Fedora" ] ; then
-    distri="Fedora"
+  elif [ "$NAME" == "Fedora" ] || [ "$NAME" == "CentOS Linux" ] ; then
+    distri="${NAME%% *}"
     reles="$VERSION"
   elif [ "$issue" == "LMDE" ] ; then
     distri="$issue"
